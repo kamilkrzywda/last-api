@@ -13,10 +13,13 @@ A powerful Next.js application that serves as a universal API responder, capable
 - **AI-Powered Generation**: Utilizes OpenAI to generate structured responses based on your schema
 - **Modern UI**: Built with Tailwind CSS for a responsive and clean interface
 
+## Screenshot
+
+![Application Screenshot](/public/screen.png)
+
 ## Prerequisites
 
 - Node.js (version specified in `.nvmrc`)
-- Yarn package manager
 - OpenAI API key
 
 ## Setup
@@ -24,7 +27,7 @@ A powerful Next.js application that serves as a universal API responder, capable
 1. Clone the repository
 2. Install dependencies:
    ```bash
-   yarn install
+   npm install
    ```
 3. Copy the environment file and configure your OpenAI API key:
    ```bash
@@ -40,7 +43,7 @@ A powerful Next.js application that serves as a universal API responder, capable
 Run the development server with Turbopack for faster builds:
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
@@ -51,16 +54,16 @@ The project includes a comprehensive test suite using Jest and React Testing Lib
 
 ```bash
 # Run tests
-yarn test
+npm test
 
 # Run tests in watch mode
-yarn test:watch
+npm run test:watch
 
 # Run tests with coverage
-yarn test:ci
+npm run test:ci
 
 # Update test snapshots
-yarn test:update
+npm run test:update
 ```
 
 ## Code Quality
@@ -76,10 +79,10 @@ Run the following commands to ensure code quality:
 
 ```bash
 # Lint the code
-yarn lint
+npm run lint
 
 # Format the code
-yarn format
+npm run format
 ```
 
 ## Project Structure
@@ -106,8 +109,8 @@ The application is optimized for deployment on Vercel:
 For other platforms, build the production version:
 
 ```bash
-yarn build
-yarn start
+npm run build
+npm start
 ```
 
 ## License
