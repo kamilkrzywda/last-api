@@ -1,0 +1,8 @@
+---
+description: general project rules - load every time
+globs: 
+alwaysApply: false
+---
+# Your rule content
+
+- load on code edit: [nextjs.mdc](mdc:.cursor/rules/nextjs.mdc)
