@@ -87,6 +87,28 @@ export default function StructuredTextPage() {
         {`Structured Text Generator (Last API you'll ever need)`}
       </h1>
 
+      {/* Quick Links */}
+      <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+        <a
+          href="/api"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-100 rounded-md transition-colors shadow-sm hover:shadow-md"
+        >
+          <span>📚</span>
+          <span>API Documentation</span>
+        </a>
+        <a
+          href="https://github.com/kamilkrzywda/last-api"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-100 rounded-md transition-colors shadow-sm hover:shadow-md"
+        >
+          <span>📦</span>
+          <span>GitHub Repository</span>
+        </a>
+      </div>
+
       {/* Schema Examples */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Example Schemas</h2>
@@ -104,21 +126,21 @@ export default function StructuredTextPage() {
       </div>
 
       {/* Schema Builder */}
-      <div className="mb-8 space-y-4">
-        <h2 className="text-xl font-semibold mb-4">Define Schema</h2>
+      <div className="mb-6 space-y-3">
+        <h2 className="text-xl font-semibold mb-3">Define Schema</h2>
 
-        <div className="flex gap-4 mb-4">
+        <div className="flex gap-2 mb-2">
           <input
             type="text"
             value={newField.id}
             onChange={e => handleUpdateNewField(e.target.value)}
             placeholder="Field ID"
-            className="flex-1 px-3 py-2 border rounded-md dark:bg-gray-800"
+            className="flex-1 px-2 py-1 border rounded-md dark:bg-gray-800 text-sm"
           />
           <select
             value={newField.type}
             onChange={e => handleFieldTypeChange(e.target.value as Field['type'])}
-            className="px-3 py-2 border rounded-md dark:bg-gray-800"
+            className="px-2 py-1 border rounded-md dark:bg-gray-800 text-sm"
           >
             <option value="string">String</option>
             <option value="string[]">String Array</option>
@@ -130,20 +152,20 @@ export default function StructuredTextPage() {
           <button
             onClick={handleAddField}
             disabled={!newField.id}
-            className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 disabled:bg-purple-300"
+            className="px-3 py-1 bg-gray-800 text-gray-100 rounded-md hover:bg-gray-700 disabled:bg-gray-600 disabled:text-gray-400 transition-colors shadow-sm text-sm"
           >
             Add Field
           </button>
         </div>
 
         {/* Field List */}
-        <div className="space-y-2">
+        <div className="space-y-1">
           {fields.map((field, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 p-2 border rounded-md dark:bg-gray-800"
+              className="flex items-center gap-2 p-1.5 border rounded-md dark:bg-gray-800 text-sm"
             >
-              <span className="flex-1">
+              <span className="flex-none w-1/4 truncate">
                 {field.id} ({field.type})
               </span>
               <div className="flex-1">
@@ -152,7 +174,7 @@ export default function StructuredTextPage() {
                     type="text"
                     value={field.example as string}
                     onChange={e => handleUpdateFieldExample(index, e.target.value)}
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                     placeholder="Example value"
                   />
                 ) : field.type === 'string[]' ? (
@@ -165,7 +187,7 @@ export default function StructuredTextPage() {
                         e.target.value.split(',').map(s => s.trim())
                       )
                     }
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                     placeholder="Example values (comma-separated)"
                   />
                 ) : field.type === 'number' ? (
@@ -174,7 +196,7 @@ export default function StructuredTextPage() {
                     step="any"
                     value={field.example as number}
                     onChange={e => handleUpdateFieldExample(index, parseFloat(e.target.value))}
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                     placeholder="Enter a number"
                   />
                 ) : field.type === 'number[]' ? (
@@ -190,14 +212,14 @@ export default function StructuredTextPage() {
                           .filter(n => !isNaN(n))
                       )
                     }
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                     placeholder="Example numbers (comma-separated)"
                   />
                 ) : field.type === 'boolean' ? (
                   <select
                     value={(field.example as boolean).toString()}
                     onChange={e => handleUpdateFieldExample(index, e.target.value === 'true')}
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                   >
                     <option value="true">True</option>
                     <option value="false">False</option>
@@ -212,14 +234,14 @@ export default function StructuredTextPage() {
                         e.target.value.split(',').map(s => s.trim().toLowerCase() === 'true')
                       )
                     }
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                     placeholder="Example booleans (comma-separated true/false)"
                   />
                 ) : (
                   <select
                     value={(field.example as boolean).toString()}
                     onChange={e => handleUpdateFieldExample(index, e.target.value === 'true')}
-                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700"
+                    className="w-full px-2 py-1 border rounded-md dark:bg-gray-700 text-sm"
                   >
                     <option value="true">True</option>
                     <option value="false">False</option>
@@ -228,7 +250,7 @@ export default function StructuredTextPage() {
               </div>
               <button
                 onClick={() => handleRemoveField(index)}
-                className="text-red-500 hover:text-red-600"
+                className="flex-none text-gray-400 hover:text-red-400 transition-colors px-2"
               >
                 Remove
               </button>
@@ -276,7 +298,7 @@ export default function StructuredTextPage() {
               }
             }}
             disabled={isGeneratingPrompt || isGenerating || fields.length === 0}
-            className="px-3 py-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white rounded-md text-sm font-medium transition-colors flex items-center gap-2 min-w-[135px] justify-center"
+            className="px-3 py-1 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-600 disabled:text-gray-400 text-gray-100 rounded-md text-sm font-medium transition-colors flex items-center gap-2 min-w-[135px] justify-center shadow-sm"
           >
             {isGeneratingPrompt ? (
               <>
@@ -304,7 +326,7 @@ export default function StructuredTextPage() {
         <button
           onClick={handleGenerate}
           disabled={isGenerating || fields.length === 0 || !prompt}
-          className="w-full py-2 px-4 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2"
+          className="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 disabled:text-gray-400 text-gray-100 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2 shadow-sm hover:shadow-md"
         >
           {isGenerating ? (
             <>
@@ -334,21 +356,6 @@ export default function StructuredTextPage() {
           </pre>
         </div>
       )}
-
-      <div className="mb-8 flex items-center gap-2">
-        <a
-          href="/api"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors text-sm"
-        >
-          <span>📚</span>
-          <span>API Documentation</span>
-        </a>
-        <span className="text-gray-500 text-sm">
-          Access the API documentation and integration guide
-        </span>
-      </div>
     </div>
   );
 }
