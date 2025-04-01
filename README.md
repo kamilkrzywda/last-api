@@ -13,10 +13,6 @@ A powerful Next.js application that serves as a universal API responder, capable
 - **AI-Powered Generation**: Utilizes OpenAI to generate structured responses based on your schema
 - **Modern UI**: Built with Tailwind CSS for a responsive and clean interface
 
-## Screenshot
-
-![Application Screenshot](/public/screen.png)
-
 ## Prerequisites
 
 - Node.js (version specified in `.nvmrc`)
