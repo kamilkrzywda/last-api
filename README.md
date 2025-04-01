@@ -20,16 +20,21 @@ A powerful Next.js application that serves as a universal API responder, capable
 ## Prerequisites
 
 - Node.js (version specified in `.nvmrc`)
+- Yarn (version 4.8.0 or later)
 - OpenAI API key
 
 ## Setup
 
 1. Clone the repository
-2. Install dependencies:
+2. Enable Yarn:
    ```bash
-   npm install
+   corepack enable
    ```
-3. Copy the environment file and configure your OpenAI API key:
+3. Install dependencies:
+   ```bash
+   yarn install
+   ```
+4. Copy the environment file and configure your OpenAI API key:
    ```bash
    cp .env.example .env.local
    ```
@@ -43,7 +48,7 @@ A powerful Next.js application that serves as a universal API responder, capable
 Run the development server with Turbopack for faster builds:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
@@ -54,16 +59,16 @@ The project includes a comprehensive test suite using Jest and React Testing Lib
 
 ```bash
 # Run tests
-npm test
+yarn test
 
 # Run tests in watch mode
-npm run test:watch
+yarn test:watch
 
 # Run tests with coverage
-npm run test:ci
+yarn test:ci
 
 # Update test snapshots
-npm run test:update
+yarn test:update
 ```
 
 ## Code Quality
@@ -79,10 +84,10 @@ Run the following commands to ensure code quality:
 
 ```bash
 # Lint the code
-npm run lint
+yarn lint
 
 # Format the code
-npm run format
+yarn format
 ```
 
 ## Project Structure
@@ -109,8 +114,8 @@ The application is optimized for deployment on Vercel:
 For other platforms, build the production version:
 
 ```bash
-npm run build
-npm start
+yarn build
+yarn start
 ```
 
 ## License

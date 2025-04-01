@@ -47,5 +47,5 @@
     "jest-environment-jsdom": "^29.7.0",
     "ts-node": "^10.9.2"
   },
-  "packageManager": "yarn@4.8.0"
+  "packageManager": "yarn@4.8.1"
 }
