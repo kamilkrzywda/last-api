@@ -1,5 +1,5 @@
 import React from 'react';
-import { SchemaExample, SchemaExampleName } from '../app/hooks/useSchema';
+import { SchemaExample, SchemaExampleName } from '../hooks/useSchema';
 
 interface SchemaExamplesProps {
   getExampleNames: () => string[];

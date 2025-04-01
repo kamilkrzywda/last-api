@@ -1,6 +1,6 @@
 'use client';
 
-import { Schema, useSchemaExamples } from './hooks/useSchema';
+import { Schema, useSchemaExamples } from '../hooks/useSchema';
 import { useState } from 'react';
 import { QuickLinks } from '../components/QuickLinks';
 import { SchemaExamples } from '../components/SchemaExamples';

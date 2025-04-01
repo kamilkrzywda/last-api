@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { aiProxyService } from '../app/services/aiProxy';
-import { Schema, useSchemaExamples } from '@/app/hooks/useSchema';
+import { aiProxyService } from '../services/aiProxy';
+import { Schema } from '@/hooks/useSchema';
 
 interface SchemaPreviewProps {
   schema: Schema;
@@ -11,7 +13,6 @@ export const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema, setSchema 
   const [isGeneratingSchema, setIsGeneratingSchema] = useState(false);
   const [schemaError, setSchemaError] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState(() => JSON.stringify(schema, null, 2));
-  const { examples: schemaExamples } = useSchemaExamples();
   useEffect(() => {
     setEditingValue(JSON.stringify(schema, null, 2));
   }, [schema]);
@@ -45,7 +46,14 @@ export const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema, setSchema 
               setIsGeneratingSchema(true);
               try {
                 const response = await aiProxyService.chat(
-                  `Generate a random schema for a JSON API response. The schema should be creative and practical.
+                  `RESPONSE RULES:
+                  - Generate a random schema for a JSON API response.
+                  - Respond ONLY with a valid JSON object
+                  - DO NOT include any other text, markdown, explanations, or formatting
+                  - DO NOT use code blocks or backticks
+                  - DO NOT include emojis or special characters that could break JSON parsing
+                  - BE CREATIVE, but return practical schema
+                  
                   Return ONLY a JSON object with the following format:
 
                   SchemaFieldType =
@@ -64,10 +72,10 @@ export const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema, setSchema 
 
                   Schema = Record<string, SchemaFieldType>;
 
-                  Generate between 5-10 fields. Make it coherent and related to a single theme/purpose.
-                  NO explanation text, ONLY the JSON object.
-                  
-                  Heres some examples: ${JSON.stringify(schemaExamples)}`,
+                  Arrays of objects should be formated as: items: [{field: "string"}]
+
+                  Generate between 5-10 root fields. Make it coherent and related to a single theme/purpose.
+                  NO explanation text, ONLY the JSON object.`,
                   {
                     temperature: 0.9,
                   }

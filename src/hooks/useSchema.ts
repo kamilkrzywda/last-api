@@ -1,3 +1,5 @@
+'use client';
+
 // @ts-expect-error - Circular reference
 export type SchemaFieldType =
   | 'uuid'
@@ -172,7 +174,7 @@ const schemaExamples: SchemaExample[] = [
       releaseYear: 'number',
       tracks: [
         {
-          trackId: 'string',
+          track: 'number',
           trackTitle: 'string',
           durationSeconds: 'number',
           isExplicit: 'boolean',

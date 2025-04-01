@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
-import { aiProxyService } from '../app/services/aiProxy';
-import { Schema } from '../app/hooks/useSchema';
+import { aiProxyService } from '../services/aiProxy';
+import { Schema } from '../hooks/useSchema';
+
 interface GenerateButtonProps {
   schema: Schema;
   prompt: string;
