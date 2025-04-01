@@ -1,36 +1,20 @@
 'use client';
 
-import { useSchemaFields } from './hooks/useSchemaFields';
-import { useSchemaPreview } from './hooks/useSchemaPreview';
-import { useSchemaExamples } from './hooks/useSchemaExamples';
+import { Schema, useSchemaExamples } from './hooks/useSchema';
 import { useState } from 'react';
 import { QuickLinks } from '../components/QuickLinks';
 import { SchemaExamples } from '../components/SchemaExamples';
-import { SchemaBuilder } from '../components/SchemaBuilder';
 import { SchemaPreview } from '../components/SchemaPreview';
 import { PromptSection } from '../components/PromptSection';
 import { GenerateButton } from '../components/GenerateButton';
 
 export default function StructuredTextPage() {
-  const {
-    fields,
-    setFields,
-    newField,
-    handleAddField,
-    handleUpdateFieldExample,
-    handleFieldTypeChange,
-    handleRemoveField,
-    handleUpdateNewField,
-  } = useSchemaFields();
-
-  const { schemaError, handleSchemaPreviewChange, editingValue, handleSchemaPreviewBlur } =
-    useSchemaPreview(fields, setFields);
-
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [schema, setSchema] = useState<Schema>({});
 
   const { getExampleNames, getExampleByName } = useSchemaExamples();
 
@@ -45,27 +29,15 @@ export default function StructuredTextPage() {
       <SchemaExamples
         getExampleNames={getExampleNames}
         getExampleByName={getExampleByName}
-        setFields={setFields}
+        setSchema={exampleName => {
+          const example = getExampleByName(exampleName);
+          if (example) {
+            setSchema(example.schema);
+          }
+        }}
       />
 
-      <SchemaBuilder
-        fields={fields}
-        setFields={setFields}
-        newField={newField}
-        handleAddField={handleAddField}
-        handleUpdateFieldExample={handleUpdateFieldExample}
-        handleFieldTypeChange={handleFieldTypeChange}
-        handleRemoveField={handleRemoveField}
-        handleUpdateNewField={handleUpdateNewField}
-        setError={setError}
-      />
-
-      <SchemaPreview
-        schemaError={schemaError}
-        editingValue={editingValue}
-        handleSchemaPreviewChange={handleSchemaPreviewChange}
-        handleSchemaPreviewBlur={handleSchemaPreviewBlur}
-      />
+      <SchemaPreview schema={schema} setSchema={setSchema} />
 
       <PromptSection
         prompt={prompt}
@@ -73,7 +45,7 @@ export default function StructuredTextPage() {
         isGeneratingPrompt={isGeneratingPrompt}
         setIsGeneratingPrompt={setIsGeneratingPrompt}
         isGenerating={isGenerating}
-        fields={fields}
+        schema={schema}
         setError={setError}
       />
 
@@ -84,7 +56,7 @@ export default function StructuredTextPage() {
       )}
 
       <GenerateButton
-        fields={fields}
+        schema={schema}
         prompt={prompt}
         isGenerating={isGenerating}
         setIsGenerating={setIsGenerating}

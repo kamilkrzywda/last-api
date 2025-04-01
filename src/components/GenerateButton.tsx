@@ -1,9 +1,8 @@
 import React from 'react';
-import { Field } from '../app/hooks/useSchemaFields';
-import { openAIService } from '../app/services/openAI';
-
+import { aiProxyService } from '../app/services/aiProxy';
+import { Schema } from '../app/hooks/useSchema';
 interface GenerateButtonProps {
-  fields: Field[];
+  schema: Schema;
   prompt: string;
   isGenerating: boolean;
   setIsGenerating: (isGenerating: boolean) => void;
@@ -13,7 +12,7 @@ interface GenerateButtonProps {
 }
 
 export const GenerateButton: React.FC<GenerateButtonProps> = ({
-  fields,
+  schema,
   prompt,
   isGenerating,
   setIsGenerating,
@@ -22,32 +21,29 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
   setError,
 }) => {
   const handleGenerate = async () => {
-    if (fields.length === 0 || !prompt) return;
+    if (schema == null || schema.length === 0 || !prompt) return;
 
     setIsGenerating(true);
     setError(null);
 
+    console.log(JSON.stringify(schema));
+
     try {
       const systemMessage = `You are a universal API responder. Your ONLY role is to generate json response in a specific format.
-        RESPONSE RULES:
-        1. Respond ONLY with a valid JSON object
-        2. The JSON object should contain EXACTLY these keys: ${fields.map(f => f.id).join(', ')}
-        3. Each value should match its field type EXACTLY as specified:
-        - string: a single text string (not an array)
-        - string[]: an array of text strings (e.g. ["text1", "text2"])
-        - number: a single numeric value (not an array)
-        - number[]: an array of numeric values (e.g. [1, 2, 3])
-        - boolean: true or false (not an array)
-        - boolean[]: an array of true/false values (e.g. [true, false])
-        4. DO NOT convert single values to arrays unless the type explicitly ends with []
-        5. DO NOT convert arrays to single values unless the type is a single string/number/boolean
-        6. DO NOT include any other text, markdown, explanations, or formatting
-        7. DO NOT use code blocks or backticks
-        8. DO NOT include emojis or special characters that could break JSON parsing`;
+        # RESPONSE RULES:
+        - Respond ONLY with a valid JSON object
+        - The JSON object should have EXACTLY this format: ${JSON.stringify(schema)}
+        - MAKE SURE to include list of objects if such exists in the schema
+        - "string[]" or other types should not return empty arrays
+        - DO NOT return empty arrays
+        - DO NOT include any other text, markdown, explanations, or formatting
+        - DO NOT use code blocks or backticks
+        - DO NOT include emojis or special characters that could break JSON parsing
+        - BE CREATIVE, but make sure to follow the schema`;
 
-      const response = await openAIService.chat(prompt, {
+      const response = await aiProxyService.chat(prompt, {
         systemMessage,
-        temperature: 0.7,
+        temperature: 0.9,
       });
 
       if (response?.content) {
@@ -77,7 +73,7 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
     <div className="mb-8 space-y-4">
       <button
         onClick={handleGenerate}
-        disabled={isGenerating || fields.length === 0 || !prompt}
+        disabled={isGenerating || schema.length === 0 || !prompt}
         className="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 disabled:text-gray-400 text-gray-100 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2 shadow-sm hover:shadow-md"
       >
         {isGenerating ? (

@@ -3,11 +3,21 @@ interface ChatOptions {
   temperature?: number;
   maxTokens?: number;
   timeoutMs?: number;
+  responseFormat?: 'text' | 'json_object';
+  tools?: Array<{
+    type: string;
+    function: {
+      name: string;
+      description?: string;
+      parameters: Record<string, unknown>;
+    };
+  }>;
+  toolChoice?: string | { type: string; function: { name: string } };
 }
 
 export const DEFAULT_TIMEOUT = 30000; // 30 seconds
 
-export class OpenAIService {
+export class AIProxyService {
   private readonly baseURL: string;
 
   constructor(baseURL: string = '/api/ai') {
@@ -34,12 +44,14 @@ export class OpenAIService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          service: 'openai',
           message: userMessage,
           options: {
             systemMessage: options.systemMessage,
             temperature: options.temperature,
             maxTokens: options.maxTokens,
+            responseFormat: options.responseFormat,
+            tools: options.tools,
+            toolChoice: options.toolChoice,
           },
         }),
       });
@@ -72,4 +84,4 @@ export class OpenAIService {
 }
 
 // Create a singleton instance with default configuration
-export const openAIService = new OpenAIService();
+export const aiProxyService = new AIProxyService();

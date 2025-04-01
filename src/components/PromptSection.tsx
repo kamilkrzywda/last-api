@@ -1,6 +1,6 @@
 import React from 'react';
-import { openAIService } from '../app/services/openAI';
-import { Field } from '../app/hooks/useSchemaFields';
+import { aiProxyService } from '../app/services/aiProxy';
+import { Schema } from '@/app/hooks/useSchema';
 
 interface PromptSectionProps {
   prompt: string;
@@ -8,7 +8,7 @@ interface PromptSectionProps {
   isGeneratingPrompt: boolean;
   setIsGeneratingPrompt: (isGenerating: boolean) => void;
   isGenerating: boolean;
-  fields: Field[];
+  schema: Schema;
   setError: (error: string | null) => void;
 }
 
@@ -18,7 +18,7 @@ export const PromptSection: React.FC<PromptSectionProps> = ({
   isGeneratingPrompt,
   setIsGeneratingPrompt,
   isGenerating,
-  fields,
+  schema,
   setError,
 }) => {
   return (
@@ -29,12 +29,17 @@ export const PromptSection: React.FC<PromptSectionProps> = ({
           onClick={async () => {
             setIsGeneratingPrompt(true);
             try {
-              const response = await openAIService.chat(
-                `Generate a creative prompt that would work well with the current schema fields: ${fields
-                  .map(f => f.id)
-                  .join(
-                    ', '
-                  )}. The prompt should be specific and detailed, encouraging structured output. Don't include any explanation, just the prompt text. Make it short and concise. Do not include list of fields in the prompt.`,
+              const response = await aiProxyService.chat(
+                `Generate a creative prompt that would work well with the current schema fields: ${JSON.stringify(schema)}
+                - The prompt should be specific and detailed, encouraging structured output
+                - Don't include any explanation, just the prompt text
+                - Make it short and concise
+                - Do not include list of fields in the prompt
+                - It should describe type of item, not specific one.
+                - It should be generic type, every response should return diferent object.
+                - It should be creative, but make sure to follow the schema.
+                - It should be short, max 2 sentences.
+                `,
                 {
                   temperature: 0.9,
                 }
@@ -48,7 +53,7 @@ export const PromptSection: React.FC<PromptSectionProps> = ({
               setIsGeneratingPrompt(false);
             }
           }}
-          disabled={isGeneratingPrompt || isGenerating || fields.length === 0}
+          disabled={isGeneratingPrompt || isGenerating}
           className="px-3 py-1 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-600 disabled:text-gray-400 text-gray-100 rounded-md text-sm font-medium transition-colors flex items-center gap-2 min-w-[135px] justify-center shadow-sm"
         >
           {isGeneratingPrompt ? (

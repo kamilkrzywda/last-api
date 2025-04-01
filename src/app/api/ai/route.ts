@@ -1,80 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
-const openAI = new OpenAI({
-  baseURL: process.env.OPENAI_BASE_URL || 'http://192.168.1.100:1234/v1',
-  apiKey: process.env.OPENAI_API_KEY || 'not-needed',
-});
+const OPEN_WEBUI_URL = process.env.OPEN_WEBUI_URL || 'http://localhost:3000';
+const OPEN_WEBUI_API_KEY = process.env.OPEN_WEBUI_API_KEY;
+
+if (!OPEN_WEBUI_API_KEY) {
+  console.warn('Warning: OPEN_WEBUI_API_KEY is not set');
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { service, message, options } = await request.json();
+    const { message, options } = await request.json();
 
-    if (service === 'openai') {
-      const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
+    const messages = [];
 
-      if (options?.systemMessage) {
-        messages.push({
-          role: 'system',
-          content: options.systemMessage,
-        });
-      }
-
+    if (options?.systemMessage) {
       messages.push({
-        role: 'user',
-        content: message,
+        role: 'system',
+        content: options.systemMessage,
       });
+    }
 
-      const completion = await openAI.chat.completions.create({
-        model: 'gemma-3-12b-it-GGUF',
+    messages.push({
+      role: 'user',
+      content: message,
+    });
+
+    const response = await fetch(`${OPEN_WEBUI_URL}/api/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${OPEN_WEBUI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google_genai.gemini-2.0-flash',
         messages,
         temperature: options?.temperature ?? 0.6,
         max_tokens: options?.maxTokens,
-      });
+        response_format: options?.responseFormat ? { type: options.responseFormat } : undefined,
+        tools: options?.tools,
+        tool_choice: options?.toolChoice,
+      }),
+    });
 
-      return NextResponse.json(completion.choices[0].message);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to get completion from Open WebUI');
     }
 
-    if (service === 'gemini') {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error('Gemini API key not configured');
-      }
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: message,
-                  },
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: options?.temperature ?? 0.6,
-              maxOutputTokens: options?.maxTokens,
-            },
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return NextResponse.json({ content: data.candidates[0]?.content.parts[0]?.text || '' });
-    }
-
-    throw new Error('Invalid service specified');
+    const completion = await response.json();
+    return NextResponse.json(completion.choices[0].message);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
